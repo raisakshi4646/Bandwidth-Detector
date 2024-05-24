@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bandwidth Usage</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    
+</head>
+<body>
+    <h1 align="center">Bandwidth Speed Detector</h1>
+    <canvas id="bandwidth-chart" width="400" height="200"></canvas>
+
+    <script>
+        var ctx = document.getElementById('bandwidth-chart').getContext('2d');
+        var bandwidthChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Upload Speed (bits/s)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    data: [],
+                    fill: false
+                }, {
+                    label: 'Download Speed (bits/s)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    data: [],
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        display: false
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top'
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                var label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.parsed.y.toFixed(2);
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const socket = io.connect('http://' + document.domain + ':' + location.port);
+
+        socket.on('bandwidth_data', function(data) {
+            try {
+                var timestamp = new Date().toLocaleTimeString();
+                bandwidthChart.data.labels.push(timestamp);
+                bandwidthChart.data.datasets[0].data.push(data.upload_speed);
+                bandwidthChart.data.datasets[1].data.push(data.download_speed);
+
+                
+                if (bandwidthChart.data.labels.length > 10) {
+                    bandwidthChart.data.labels.shift();
+                    bandwidthChart.data.datasets[0].data.shift();
+                    bandwidthChart.data.datasets[1].data.shift();
+                }
+
+                bandwidthChart.update();
+            } catch (error) {
+                console.error('Error processing bandwidth data:', error);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #975f5f;
+}
+
+.container {
+    max-width: 850px;
+    margin: 50px auto;
+    background-color: #701e1ead;
+    padding: 19px;
+    border-radius: 7px;
+    box-shadow: 0 0 10px rgba(36, 65, 97, 0.1);
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+}
+
+button {
+    background-color: #377c99;
+    color: #8b46336d;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#result {
+    margin-top: 20px;
+    color: #5b3434;
+}
+
+/* Add styles for the graph container */
+.graph-container {
+    margin-top: 20px;
+}
+
+/* Adjust canvas size for responsiveness */
+#lineChart {
+    width: 100%;
+    height: auto;
+    max-height: 380px;
+}
